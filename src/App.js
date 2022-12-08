@@ -22,6 +22,9 @@ import Register from "./components/auth/Register";
 import EmailVerification from "./components/pages/EmailVerification";
 import ForgotPassword from "./components/pages/ForgotPassword";
 import ResetPassword from "./components/pages/ResetPassword";
+import Home from "./components/pages/Home";
+import PrivateRoute from "./components/routing/PrivateRoute";
+import PostState from "./context/post/PostState";
 
 function App() {
   axios.defaults.baseURL = "http://localhost:4000/";
@@ -32,43 +35,46 @@ function App() {
   return (
     <AlertState>
       <AuthState>
-        <Router>
-          <NavigationBar />
-          <ToastContainer
-            position="top-center"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-          />
-          <Alerts />
-          <Routes>
-            <Route exact path="/" element={<Navigate to="/login" />} />
-            <Route exact path="/login" element={<Login />} />
-            <Route exact path="/register" element={<Register />} />
-            <Route
-              exact
-              path="/email-verification"
-              element={<EmailVerification />}
+        <PostState>
+          <Router>
+            <NavigationBar />
+            <ToastContainer
+              position="top-center"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
             />
-            <Route
-              exact
-              path="/forgot-password"
-              element={<ForgotPassword />}
-            />
-            <Route
-              exact
-              path="/reset-password"
-              element={<ResetPassword />}
-            />
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
-        </Router>
+            <Alerts />
+            <Routes>
+              <Route exact path="/" element={<Navigate to="/login" />} />
+              <Route exact path="/login" element={<Login />} />
+              <Route exact path="/register" element={<Register />} />
+              <Route
+                exact
+                path="/home"
+                element={<PrivateRoute Component={Home} />}
+              />
+              <Route
+                exact
+                path="/email-verification"
+                element={<EmailVerification />}
+              />
+              <Route
+                exact
+                path="/forgot-password"
+                element={<ForgotPassword />}
+              />
+              <Route exact path="/reset-password" element={<ResetPassword />} />
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </Router>
+        </PostState>
       </AuthState>
     </AlertState>
   );
