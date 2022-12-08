@@ -17,15 +17,7 @@ const NavigationBar = ({ title, logo }) => {
 
   const AuthLink = (
     <div className="d-flex justify-content-center align-items-center">
-      <div className="text-light me-4">Welcome, {user?.name}</div>
-      <NavLink
-        to="/add-post"
-        className={({ isActive }) =>
-          isActive ? "btn me-4 btn-light" : " btn me-4 btn-outline-light"
-        }
-      >
-        Add Post
-      </NavLink>
+      <div className="text-light me-4 text-capitalize">Welcome, {user?.name}</div>
       <NavLink
         to="/profile"
         className={({ isActive }) =>
@@ -66,8 +58,7 @@ const NavigationBar = ({ title, logo }) => {
       <div className="container justify-content-center justify-content-sm-between">
         <div
           className="navbar-brand text-light d-flex align-items-center justify-content-between mb-2 mb-md-0 me-5"
-          href="#home"
-          to="/home"
+          // to="/home"
         >
           <img
             src={logo}
