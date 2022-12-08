@@ -5,6 +5,7 @@ const PrivateRoute = (props) => {
   const { Component }= props
   const { isAuthenticated, loading } = useContext(AuthContext);
 
+  // when both are false navigate to login
   return !isAuthenticated && !loading?<Navigate to='/' />:<Component />
 };
 

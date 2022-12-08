@@ -157,7 +157,7 @@ const Register = () => {
                     </div>
 
                     <button
-                      className="btn btn-primary btn-lg px-5"
+                      className="btn btn-info btn-lg px-5"
                       type="submit"
                     >
                       Register <i className="fa-solid fa-user-plus" />
