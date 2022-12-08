@@ -21,8 +21,14 @@ export const USER_LOADED = "USER_LOADED";
 
 //Posts
 export const SET_POSTS = "SET_POSTS"
-export const ADD_POST = "ADD_POST"
 export const POSTS_ERROR = "POSTS_ERROR"
+
+// Add Post
+export const ADD_POST = "ADD_POST";
+export const ADD_POST_ERROR = "ADD_POST_ERROR";
+export const CLEAR_ADD_POST_ERROR = "CLEAR_ADD_POST_ERROR";
+export const SET_ADD_POST_LOADING = "SET_ADD_POST_LOADING";
+export const CLEAR_ADD_POST_LOADING = "CLEAR_ADD_POST_LOADING";
 
 
 // Current
@@ -39,3 +45,6 @@ export const REMOVE_ALERT = "REMOVE_ALERT";
 
 //set loading
 export const SET_LOADING = "SET_LOADING";
+export const CLEAR_LOADING = "CLEAR_LOADING";
+
+

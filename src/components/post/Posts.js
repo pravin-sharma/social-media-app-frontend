@@ -11,6 +11,7 @@ const Posts = () => {
 
   useEffect(() => {
     if (error) {
+      console.log('inside posts')
       setAlert(error, "danger");
       clearError();
     }
@@ -25,7 +26,7 @@ const Posts = () => {
   return (
     <div className="d-flex flex-column align-items-center">
       <div className="col-12 col-xl-10">
-        <PostForm />
+        {/* <PostForm /> */}
         {posts.length
           ? posts.map((post) => <PostItem post={post} key={post._id} />)
           : "No Posts Found"}

@@ -3,17 +3,18 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import authContext from "../../context/auth/authContext";
 
-import { fill } from "@cloudinary/url-gen/actions/resize";
-import {  CloudinaryImage } from "@cloudinary/url-gen";
-import { AdvancedImage } from "@cloudinary/react";
 import postContext from "../../context/post/postContext";
 import alertContext from "../../context/alert/alertContext";
-import Spinner from "../layout/Spinner";
 
 const PostForm = () => {
   const { user } = useContext(authContext);
   const { setAlert } = useContext(alertContext);
-  const { addPost, error, clearError , loading, setLoading} = useContext(postContext);
+  const {
+    addPost,
+    loadingAddPostForm,
+    errorAddPostForm,
+    clearAddPostError,
+  } = useContext(postContext);
 
   //   modal control
   const [show, setShow] = useState(false);
@@ -25,20 +26,19 @@ const PostForm = () => {
   const [file, setFile] = useState("");
 
   useEffect(() => {
-    if (!error && !loading) {
-        handleClose();
-        setCaption("");
-        setFile("");
-        setLoading();
-        setAlert('Post Added', 'success')
-        return;
-      }
-
-    if (error) {
-      setAlert(error, "danger");
+    if (errorAddPostForm) {
+      setAlert(errorAddPostForm, "danger");
+      clearAddPostError();
     }
-    clearError();
-  }, [error, loading]);
+  }, [errorAddPostForm]);
+
+  useEffect(() => {
+    if (!errorAddPostForm && !loadingAddPostForm) {
+      handleClose();
+      setCaption("");
+      setFile("");
+    }
+  }, [loadingAddPostForm]);
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
@@ -108,8 +108,8 @@ const PostForm = () => {
                 {/* <!-- caption --> */}
                 <div>
                   <textarea
-                    cols="30"
-                    rows="5"
+                    cols="12"
+                    rows="3"
                     className="form-control border-0"
                     name="caption"
                     value={caption}
@@ -121,21 +121,26 @@ const PostForm = () => {
                 </div>
                 <input
                   type="file"
+                  className="form-control mt-3"
                   placeholder="Upload Media"
-                  onChange={(e)=>setFile(e.target.files[0])}
+                  onChange={(e) => setFile(e.target.files[0])}
                 />
               </div>
             </div>
-            {/* {loading && <Spinner />} */}
           </Modal.Body>
           <Modal.Footer>
             <Button
               type="submit"
               variant="primary"
-              className="w-100"
+              className={loadingAddPostForm ? "w-100 disabled" : "w-100"}
               onClick={onSubmitHandler}
             >
-              Post
+              {loadingAddPostForm ? "Posting" : "Post"}
+              {loadingAddPostForm ? (
+                <span className="ms-2 spinner-border spinner-border-sm"></span>
+              ) : (
+                ""
+              )}
             </Button>
           </Modal.Footer>
         </form>
