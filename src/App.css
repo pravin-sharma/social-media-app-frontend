@@ -3,3 +3,15 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+
+.my-btn-secondary{
+    background-color: white;
+    border: none;
+    border-radius: 0.5rem;
+}
+
+.my-btn-secondary:hover{
+    background-color: #f0f2f5;
+    color: black;
+}
