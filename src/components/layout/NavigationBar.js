@@ -19,7 +19,7 @@ const NavigationBar = ({ title, logo }) => {
     <div className="d-flex justify-content-center align-items-center">
       <div className="text-light me-4 text-capitalize">Welcome, {user?.name}</div>
       <NavLink
-        to="/profile"
+        to={`/profile/${user?._id}`}
         className={({ isActive }) =>
           isActive ? "btn me-4 btn-light" : " btn me-4 btn-outline-light"
         }
@@ -56,9 +56,9 @@ const NavigationBar = ({ title, logo }) => {
   return (
     <nav className="navbar bg-dark">
       <div className="container justify-content-center justify-content-sm-between">
-        <div
+        <NavLink
           className="navbar-brand text-light d-flex align-items-center justify-content-between mb-2 mb-md-0 me-5"
-          // to="/home"
+          to="/home"
         >
           <img
             src={logo}
@@ -68,7 +68,7 @@ const NavigationBar = ({ title, logo }) => {
             className="d-inline-block me-2"
           />
           {title}
-        </div>
+        </NavLink>
 
         {!isAuthenticated && guestLink}
         {isAuthenticated && AuthLink}
