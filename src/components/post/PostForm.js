@@ -9,12 +9,8 @@ import alertContext from "../../context/alert/alertContext";
 const PostForm = () => {
   const { user } = useContext(authContext);
   const { setAlert } = useContext(alertContext);
-  const {
-    addPost,
-    loadingAddPostForm,
-    errorAddPostForm,
-    clearAddPostError,
-  } = useContext(postContext);
+  const { addPost, loadingAddPostForm, errorAddPostForm, clearAddPostError } =
+    useContext(postContext);
 
   //   modal control
   const [show, setShow] = useState(false);
@@ -47,23 +43,27 @@ const PostForm = () => {
 
   return (
     <Fragment>
-      <div className="bg-white p-3 mt-3 rounded border shadow">
-        <div className="d-flex" type="button" onClick={handleShow}>
-          <div className="p-1">
-            <img
-              src={user?.profilePicUrl}
-              alt="avatar"
-              className="rounded-circle me-2"
-              style={{ width: "38px", height: "38px", objectFit: "cover" }}
-            />
+      <div className="d-flex flex-column align-items-center">
+        <div className="col-12 col-xl-10">
+          <div className="bg-white p-3 mt-3 rounded border shadow">
+            <div className="d-flex" type="button" onClick={handleShow}>
+              <div className="p-1">
+                <img
+                  src={user?.profilePicUrl}
+                  alt="avatar"
+                  className="rounded-circle me-2"
+                  style={{ width: "38px", height: "38px", objectFit: "cover" }}
+                />
+              </div>
+              <input
+                type="text"
+                className="form-control rounded-pill border-0 bg-gray pointer"
+                disabled
+                value={caption}
+                placeholder={`What's on your mind?`}
+              />
+            </div>
           </div>
-          <input
-            type="text"
-            className="form-control rounded-pill border-0 bg-gray pointer"
-            disabled
-            value={caption}
-            placeholder={`What's on your mind?`}
-          />
         </div>
       </div>
 

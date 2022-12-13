@@ -26,7 +26,6 @@ const Posts = () => {
   return (
     <div className="d-flex flex-column align-items-center">
       <div className="col-12 col-xl-10">
-        {/* <PostForm /> */}
         {posts.length
           ? posts.map((post) => <PostItem post={post} key={post._id} />)
           : "No Posts Found"}

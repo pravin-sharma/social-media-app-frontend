@@ -1,3 +1,4 @@
+import { type } from "@testing-library/user-event/dist/type";
 import axios from "axios";
 import React, { useContext, useReducer } from "react";
 import alertContext from "../alert/alertContext";
@@ -12,7 +13,9 @@ import {
   SET_POSTS,
   SET_ADD_POST_LOADING,
   CLEAR_ADD_POST_LOADING,
-
+  LIKE_POST,
+  ADD_COMMENT,
+  REMOVE_COMMENT,
 } from "../types";
 import PostContext from "./postContext";
 import postReducer from "./postReducer";
@@ -23,7 +26,7 @@ const PostState = (props) => {
     error: null,
     loading: false,
     errorAddPostForm: null,
-    loadingAddPostForm: false
+    loadingAddPostForm: false,
   };
   const [state, dispatch] = useReducer(postReducer, initialState);
   const { setAlert } = useContext(alertContext);
@@ -40,6 +43,7 @@ const PostState = (props) => {
   const addPost = async (postContent) => {
     const { file } = postContent;
     try {
+      setAddPostLoading();
       if (file) {
         const uploadUrl =
           file.type === "video/mp4"
@@ -49,8 +53,6 @@ const PostState = (props) => {
         const data = new FormData();
         data.append("file", file);
         data.append("upload_preset", "SocialMedia");
-
-        setAddPostLoading()
 
         const res = await fetch(uploadUrl, {
           method: "POST",
@@ -64,30 +66,68 @@ const PostState = (props) => {
 
       const res = await axios.post("/post", postContent);
       dispatch({ type: ADD_POST, payload: res.data?.post });
-      setAlert(res.data.message, "success");
-      clearAddPostLoading()
 
+      setAlert(res.data.message, "success");
+      clearAddPostLoading();
     } catch (error) {
-      dispatch({ type: ADD_POST_ERROR, payload: error?.response?.data?.message });
+      dispatch({
+        type: ADD_POST_ERROR,
+        payload: error?.response?.data?.message,
+      });
+      
+      clearAddPostLoading();
     }
   };
+
+  const likePost = async (postId) => {
+    try {
+      const res = await axios.get(`/post/like/${postId}`);
+      dispatch({ type: LIKE_POST, payload: { likes: res.data.likes, postId } });
+    } catch (error) {
+      dispatch({ type: POSTS_ERROR, payload: error.response.data.message });
+    }
+  };
+
+  const addComment = async(postId, comment) =>{
+    try {
+      const res = await axios.post(`/post/comment/${postId}`,{
+        text: comment
+      });
+      dispatch({ type: ADD_COMMENT, payload: { postId, comment: res.data.comment  } });
+      setAlert(res.data.message, 'success');
+    } catch (error) {
+      dispatch({ type: POSTS_ERROR, payload: error.response.data.message });
+      setAlert(error.response.data.message, 'danger');
+    }
+  }
+
+  const removeComment = async(postId, commentId) =>{
+    try {
+      const res = await axios.delete(`/post/comment/${postId}/${commentId}`)
+      dispatch({type: REMOVE_COMMENT, payload: {postId, commentId}})
+      setAlert(res.data.message, 'success')
+    } catch (error) {
+      dispatch({type: POSTS_ERROR, payload: error.response.data.message})
+      setAlert(error.response.data.message, 'danger');
+    }
+  }
 
   const clearError = () => {
     dispatch({ type: CLEAR_ERRORS });
   };
 
-  const clearAddPostError = () =>{
-    dispatch({type: CLEAR_ADD_POST_ERROR});
-  }
+  const clearAddPostError = () => {
+    dispatch({ type: CLEAR_ADD_POST_ERROR });
+  };
 
   // set add post loading
-  const setAddPostLoading = () =>{
-    dispatch({type: SET_ADD_POST_LOADING})
-  } 
+  const setAddPostLoading = () => {
+    dispatch({ type: SET_ADD_POST_LOADING });
+  };
 
-  const clearAddPostLoading = () =>{
-    dispatch({type: CLEAR_ADD_POST_LOADING})
-  } 
+  const clearAddPostLoading = () => {
+    dispatch({ type: CLEAR_ADD_POST_LOADING });
+  };
 
   //set loading
   const setLoading = () => {
@@ -114,7 +154,10 @@ const PostState = (props) => {
         clearLoading,
         clearAddPostError,
         setAddPostLoading,
-        clearAddPostLoading
+        clearAddPostLoading,
+        likePost,
+        addComment,
+        removeComment
       }}
     >
       {props.children}

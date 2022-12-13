@@ -1,10 +1,9 @@
 import moment from "moment/moment";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import postContext from "../../context/post/postContext";
+import profileContext from "../../context/profile/profileContext";
 
-const PostItem = ({ post }) => {
-
+const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
   const navigate = useNavigate();
 
   //Render Post Item
@@ -17,7 +16,7 @@ const PostItem = ({ post }) => {
   let loggedInUserId = localStorage.getItem("loggedInUserId");
 
   // Like feature
-  const { likePost } = useContext(postContext);
+  const { likePost } = useContext(profileContext);
   const [isLiked, setIsLiked] = useState(false);
   const isPostLikedByYou = () => {
     const isLiked = post?.likes.filter(
@@ -30,18 +29,18 @@ const PostItem = ({ post }) => {
   }, [post]);
 
   const onLikeClick = (event) => {
-    likePost(postId);
+    likePost(postId, doesProfileBelongsToLoggedUser);
     setIsLiked(!isLiked);
   };
 
-  const onLikeHover = () =>{
+  const onLikeHover = () => {
     //TODO: show people name
-    const whoLiked = likes.map(like => like.user.name);
+    const whoLiked = likes.map((like) => like.user.name);
     console.log(whoLiked);
-  }
+  };
 
   //comments feature
-  const { addComment, removeComment } = useContext(postContext);
+  const { addComment, removeComment } = useContext(profileContext);
   const [comment, setComment] = useState("");
   const [viewPreviousComments, setViewPreviousComments] = useState(false);
 
@@ -50,21 +49,21 @@ const PostItem = ({ post }) => {
   const onCommentSubmit = (e) => {
     if (e.key == "Enter") {
       //add comment
-      addComment(postId, comment);
+      addComment(postId, comment, doesProfileBelongsToLoggedUser);
       setComment("");
     }
   };
 
   const onCommentRemove = (commentId) => {
-    removeComment(postId, commentId);
+    removeComment(postId, commentId, doesProfileBelongsToLoggedUser);
   };
 
-  const onClickName = (userId) =>{
+  const onClickName = (userId) => {
     navigate(`/profile/${userId}`);
-  }
+  };
 
   return (
-    <div className="d-flex flex-column bg-white p-4 pb-2 rounded shadow mt-3">
+    <div className="d-flex flex-column bg-white p-4 pb-2 rounded shadow my-3">
       {/* Header */}
       <div className="d-flex">
         <img
@@ -74,7 +73,7 @@ const PostItem = ({ post }) => {
           style={{ width: "38px", height: "38px", objectFit: "cover" }}
         />
         <div className="d-flex flex-column ms-2">
-          <div className="text-capitalize" style={{cursor: "pointer"}} onClick={()=>onClickName(user._id)} >{name}</div>
+          <div className="text-capitalize">{name}</div>
           <div className="text-muted" style={{ fontSize: "0.8rem" }}>
             {moment(createdAt).format("MMMM Do YYYY, h:mm a")}
           </div>
@@ -97,7 +96,14 @@ const PostItem = ({ post }) => {
         <div className="" onMouseEnter={onLikeHover}>
           <i className="fa-solid fa-thumbs-up text-primary" /> {likes.length}
         </div>
-        <div style={{cursor: "pointer"}} onClick={()=>{setViewPreviousComments(!viewPreviousComments)}}>{comments.length} comments</div>
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            setViewPreviousComments(!viewPreviousComments);
+          }}
+        >
+          {comments.length} comments
+        </div>
       </div>
       {/* Action bar */}
       <div className="d-flex border-top border-bottom justify-content-around">
@@ -112,8 +118,9 @@ const PostItem = ({ post }) => {
           )}
           Like
         </button>
-        <button className="p-2 p-2 pointer w-100  my-btn-secondary"
-          onClick={()=>document.getElementById(postId).focus()}
+        <button
+          className="p-2 p-2 pointer w-100  my-btn-secondary"
+          onClick={() => document.getElementById(postId).focus()}
         >
           <i className="fa-solid fa-comment fa-lg text-muted" /> Comment
         </button>
@@ -155,7 +162,11 @@ const PostItem = ({ post }) => {
             />
             <div className="d-flex align-items-center ms-2">
               <div className="d-flex flex-column comment-input-bg rounded">
-                <div style={{cursor: "pointer"}} className="mx-2 mt-1 text-capitalize" onClick={()=>onClickName(comment.user._id)}>
+                <div
+                  style={{ cursor: "pointer" }}
+                  onClick={() => onClickName(comment.user._id)}
+                  className="mx-2 mt-1 text-capitalize"
+                >
                   {comment.user.name}
                 </div>
                 <div
@@ -186,7 +197,11 @@ const PostItem = ({ post }) => {
           />
           <div className="d-flex align-items-center ms-2">
             <div className="d-flex flex-column comment-input-bg rounded">
-              <div style={{cursor: "pointer"}} className="mx-2 mt-1 text-capitalize" onClick={()=>onClickName(lastComment.user._id)}>
+              <div
+                className="mx-2 mt-1 text-capitalize"
+                style={{ cursor: "pointer" }}
+                onClick={() => onClickName(lastComment.user._id)}
+              >
                 {lastComment.user.name}
               </div>
               <div
@@ -232,4 +247,4 @@ const PostItem = ({ post }) => {
   );
 };
 
-export default PostItem;
+export default ProfilePostItem;

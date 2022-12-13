@@ -7,10 +7,12 @@ import TrendingPostItem from "../post/TrendingPostItem";
 import TrendingPosts from "../post/TrendingPosts";
 const Home = () => {
   //load user
-  const { loadUser } = useContext(authContext);
+  const { loadLoggedInUser } = useContext(authContext);
 
   useEffect(() => {
-    loadUser();
+    loadLoggedInUser();
+    console.log("rendered home")
+
   }, []);
 
   //set auth true and loading false
@@ -21,9 +23,6 @@ const Home = () => {
         <div className="col-10 col-md-7 col-xl-8 me-3 pb-5">
           <PostForm />
           <Posts />
-        </div>
-        <div className="d-none d-md-block col-md-4 col-xl-3 border">
-          <TrendingPosts />
         </div>
       </div>
     </div>

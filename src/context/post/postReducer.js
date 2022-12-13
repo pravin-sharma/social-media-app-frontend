@@ -9,6 +9,9 @@ import {
   POSTS_ERROR,
   SET_LOADING,
   SET_POSTS,
+  LIKE_POST,
+  ADD_COMMENT,
+  REMOVE_COMMENT,
 } from "../types";
 
 const postReducer = (state, action) => {
@@ -23,6 +26,36 @@ const postReducer = (state, action) => {
         ...state,
         loading: false,
         posts: [action.payload, ...state.posts],
+      };
+    case LIKE_POST:
+      return {
+        ...state,
+        posts: state.posts.map((post) => {
+          if (post._id == action.payload.postId) {
+            post.likes = action.payload.likes;
+          }
+          return post;
+        }),
+      };
+    case ADD_COMMENT:
+      return {
+        ...state,
+        posts: state.posts.map((post) => {
+          if (post._id == action.payload.postId) {
+            post.comments.push(action.payload.comment);
+          }
+          return post;
+        }),
+      };
+    case REMOVE_COMMENT:
+      return {
+        ...state,
+        posts: state.posts.map(post => {
+          if(post._id == action.payload.postId){
+            post.comments = post.comments.filter(comment => comment._id!= action.payload.commentId)
+          }
+          return post;
+        })
       };
     case POSTS_ERROR:
       return {

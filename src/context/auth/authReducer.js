@@ -75,6 +75,7 @@ const authReducer = (state, action) => {
     case LOGIN_FAIL:
     case LOGOUT:
       localStorage.removeItem("token");
+      localStorage.removeItem("loggedInUserId");
       return {
         ...state,
         token: null,
