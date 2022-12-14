@@ -2,6 +2,8 @@ import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AlertContext from "../../context/alert/alertContext";
 import AuthContext from "../../context/auth/authContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -157,10 +159,10 @@ const Register = () => {
                     </div>
 
                     <button
-                      className="btn btn-info btn-lg px-5"
+                      className="btn btn-info text-light btn-lg px-5"
                       type="submit"
                     >
-                      Register <i className="fa-solid fa-user-plus" />
+                      Register <FontAwesomeIcon icon={faUserPlus}/>
                     </button>
                   </form>
                 </div>

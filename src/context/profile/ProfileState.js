@@ -71,6 +71,40 @@ const ProfileState = (props) => {
     }
   };
 
+  //update logged user profile
+  const updateLoggedUserProfile = async(userInfo) =>{
+    const { file } = userInfo;
+    try {
+      setProfileLoading();
+      if (file) {
+        const uploadUrl ="https://api.cloudinary.com/v1_1/dn6etipht/image/upload";
+        const data = new FormData();
+        data.append("file", file);
+        data.append("upload_preset", "SocialMedia");
+
+        const res = await fetch(uploadUrl, {
+          method: "POST",
+          body: data,
+        });
+
+        const media = await res.json();
+        userInfo.profilePicUrl = media.url;
+      }
+
+      const res = await axios.put("/user", userInfo);
+      dispatch({ type: SET_LOGGED_USER_PROFILE, payload: res.data?.user });
+
+      setAlert(res.data.message, "success");
+      clearProfileLoading();
+    } catch (error) {
+      dispatch({
+        type: SET_PROFILE_ERROR,
+        payload: error?.response?.data?.message,
+      });
+      clearProfileLoading();
+    }
+  }
+
   // clear logged user profile
   const clearLoggedUserProfile = () => {
     dispatch({ type: CLEAR_LOGGED_USER_PROFILE });
@@ -414,7 +448,9 @@ const ProfileState = (props) => {
 
         sentFriendRequests: state.loggedUser.sentFriendRequests,
 
-        //completed func
+        error: state.error,
+        loading: state.loading,
+
         getLoggedUserProfile,
         clearLoggedUserProfile,
         getOtherUserProfile,
@@ -438,12 +474,7 @@ const ProfileState = (props) => {
         removeFriend,
         acceptFriendRequest,
         declineFriendRequest,
-
-        //pending state
-        error: state.error,
-        loading: state.loading,
-
-        // pending to change
+        updateLoggedUserProfile,
         setProfileLoading,
         clearProfileLoading,
         clearProfileError,

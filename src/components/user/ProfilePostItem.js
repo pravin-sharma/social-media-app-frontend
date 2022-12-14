@@ -1,3 +1,6 @@
+import { faSquareMinus, faSquarePlus, faThumbsUp as faThumbsUpRg, faTrashCan } from "@fortawesome/free-regular-svg-icons";
+import { faComment, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moment from "moment/moment";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -93,8 +96,8 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
       )}
       {/* Likes and Comments */}
       <div className="d-flex justify-content-between mb-2">
-        <div className="" onMouseEnter={onLikeHover}>
-          <i className="fa-solid fa-thumbs-up text-primary" /> {likes.length}
+        <div onMouseEnter={onLikeHover} className="text-primary">
+          <FontAwesomeIcon icon={faThumbsUp} /> {likes.length}
         </div>
         <div
           style={{ cursor: "pointer" }}
@@ -106,23 +109,23 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
         </div>
       </div>
       {/* Action bar */}
-      <div className="d-flex border-top border-bottom justify-content-around">
+      <div className="d-flex border-top border-bottom justify-content-around ">
         <button
-          className="p-2 p-2 w-100 my-btn-secondary"
+          className="p-2 p-2 w-100 my-btn-secondary text-muted"
           onClick={onLikeClick}
         >
           {isLiked ? (
-            <i className="fa-solid fa-thumbs-up fa-lg text-primary me-1" />
+            <FontAwesomeIcon icon={faThumbsUp} className="text-primary me-1"/>
           ) : (
-            <i className="fa-regular fa-thumbs-up fa-lg text-muted me-1" />
+            <FontAwesomeIcon icon={faThumbsUpRg} className="me-1"/>
           )}
           Like
         </button>
         <button
-          className="p-2 p-2 pointer w-100  my-btn-secondary"
+          className="p-2 p-2 pointer w-100  my-btn-secondary text-muted"
           onClick={() => document.getElementById(postId).focus()}
         >
-          <i className="fa-solid fa-comment fa-lg text-muted" /> Comment
+          <FontAwesomeIcon icon={faComment}/> Comment
         </button>
       </div>
       {/* Comments */}
@@ -139,12 +142,12 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
           {viewPreviousComments ? (
             <>
               Collapse previous comments
-              <i className="fa-regular fa-square-minus ms-1" />
+              <FontAwesomeIcon icon={faSquareMinus} className="ms-1"/>
             </>
           ) : (
             <>
               View previous comments
-              <i className="fa-regular fa-square-plus ms-1" />
+              <FontAwesomeIcon icon={faSquarePlus} className="ms-1"/>
             </>
           )}
         </button>
@@ -179,7 +182,7 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
               {/* delete button */}
               {comment.user._id === loggedInUserId && (
                 <div onClick={() => onCommentRemove(comment._id)}>
-                  <i className="fa-regular fa-trash-can fa-md ms-2 text-danger" />
+                  <FontAwesomeIcon icon={faTrashCan} className="text-danger ms-2" />
                 </div>
               )}
             </div>
@@ -214,7 +217,7 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
             {/* delete button */}
             {lastComment.user._id === loggedInUserId && (
               <div onClick={() => onCommentRemove(lastComment._id)}>
-                <i className="fa-regular fa-trash-can fa-md ms-2 text-danger" />
+                <FontAwesomeIcon icon={faTrashCan} className="text-danger ms-2"/>
               </div>
             )}
           </div>

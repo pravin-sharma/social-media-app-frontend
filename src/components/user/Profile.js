@@ -1,10 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
+import { faUserEdit } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import alertContext from "../../context/alert/alertContext";
 import authContext from "../../context/auth/authContext";
 import profileContext from "../../context/profile/profileContext";
 import ProfilePostItem from "./ProfilePostItem";
+import ProfileUpdateForm from "./ProfileUpdateForm";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -43,8 +46,15 @@ const Profile = () => {
   } = useContext(profileContext);
   const { setAlert } = useContext(alertContext);
   const { userId } = useParams();
+
+  // Update User Info modal - modal control
+    const [showUpdateUserModal, setShowUpdateUserModal] = useState(false);
+    const handleCloseUpdateUserModal = () => setShowUpdateUserModal(false);
+    const handleShowUpdateUserModal = () => setShowUpdateUserModal(true);
+
   // Tab Selection State
   const [key, setKey] = useState("posts");
+
   // Add friend button toggle
   const [isFriendRequestSent, setIsFriendRequestSent] = useState(false);
 
@@ -145,6 +155,7 @@ const Profile = () => {
   };
 
   return (
+    <Fragment>
     <div className="container mt-1">
       <div className="row justify-content-center">
         <div className="col-10 col-md-7 col-xl-8 me-3 pb-5">
@@ -163,6 +174,11 @@ const Profile = () => {
                     }
                     className="rounded-circle"
                     alt=""
+                    style={{
+                      width: "60px",
+                      height: "60px",
+                      objectFit: "cover",
+                    }}
                   />
                   <div className="d-flex flex-column ms-3">
                     {/* Name */}
@@ -180,6 +196,8 @@ const Profile = () => {
                     </div>
                   </div>
                 </div>
+                {/* Edit User Info - button */}
+                 {doesProfileBelongsToLoggedUser && <button className="mt-3 btn btn-secondary btn-sm" onClick={handleShowUpdateUserModal}><FontAwesomeIcon icon={faUserEdit}/> Update Info</button>}
                 {/* Add friends */}
                 {!doesProfileBelongsToLoggedUser && !isFriendRequestSent && !isFriend && (
                   <button
@@ -389,6 +407,9 @@ const Profile = () => {
         </div>
       </div>
     </div>
+
+    {loggedUserProfile && doesProfileBelongsToLoggedUser && <ProfileUpdateForm show={showUpdateUserModal} handleClose={handleCloseUpdateUserModal} loggedUser={loggedUserProfile}/>}
+    </Fragment>
   );
 };
 

@@ -2,6 +2,8 @@ import React, { Fragment, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import alertContext from "../../context/alert/alertContext";
 import authContext from "../../context/auth/authContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -62,7 +64,7 @@ const ResetPassword = () => {
                 className="col-1 p-1 m-2 btn btn-danger"
                 onClick={onClickBackHandle}
               >
-                <i className="fa-solid fa-arrow-left" />
+                <FontAwesomeIcon icon={faArrowLeft} />
               </button>
             </div>
             <div className="row text-center align-items-center justify-content-center">

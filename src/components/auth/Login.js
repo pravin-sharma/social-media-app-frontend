@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faKey } from '@fortawesome/free-solid-svg-icons';
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import alertContext from "../../context/alert/alertContext";
@@ -102,7 +104,7 @@ const Login = () => {
                       className="btn btn-success btn-lg px-5"
                       type="submit"
                     >
-                      Login  <i className="fa-solid fa-key" />
+                      Login  <FontAwesomeIcon icon={faKey} />
                     </button>
                   </form>
                 </div>
