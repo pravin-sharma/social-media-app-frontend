@@ -16,6 +16,7 @@ import {
   LIKE_POST,
   ADD_COMMENT,
   REMOVE_COMMENT,
+  CLEAR_POSTS,
 } from "../types";
 import PostContext from "./postContext";
 import postReducer from "./postReducer";
@@ -39,6 +40,10 @@ const PostState = (props) => {
       dispatch({ type: POSTS_ERROR, payload: error.response.data.message });
     }
   };
+
+  const clearPosts = () =>{
+    dispatch({type: CLEAR_POSTS})
+  }
 
   const addPost = async (postContent) => {
     const { file } = postContent;
@@ -148,6 +153,7 @@ const PostState = (props) => {
         loading: state.loading,
         loadingAddPostForm: state.loadingAddPostForm,
         getPosts,
+        clearPosts,
         clearError,
         addPost,
         setLoading,

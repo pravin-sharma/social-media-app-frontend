@@ -12,6 +12,7 @@ import {
   LIKE_POST,
   ADD_COMMENT,
   REMOVE_COMMENT,
+  CLEAR_POSTS,
 } from "../types";
 
 const postReducer = (state, action) => {
@@ -20,6 +21,11 @@ const postReducer = (state, action) => {
       return {
         ...state,
         posts: [...action.payload],
+      };
+    case CLEAR_POSTS:
+      return {
+        ...state,
+        posts: [],
       };
     case ADD_POST:
       return {
