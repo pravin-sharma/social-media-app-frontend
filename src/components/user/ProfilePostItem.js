@@ -1,8 +1,17 @@
-import { faSquareMinus, faSquarePlus, faThumbsUp as faThumbsUpRg, faTrashCan } from "@fortawesome/free-regular-svg-icons";
-import { faComment, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSquareMinus,
+  faSquarePlus,
+  faThumbsUp as faThumbsUpRg,
+  faTrashCan,
+} from "@fortawesome/free-regular-svg-icons";
+import {
+  faComment,
+  faThumbsUp,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moment from "moment/moment";
 import React, { useContext, useEffect, useState } from "react";
+import { Dropdown } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import profileContext from "../../context/profile/profileContext";
 
@@ -65,6 +74,12 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
     navigate(`/profile/${userId}`);
   };
 
+  //Delete post feature
+  const {deleteLoggedUserPost} = useContext(profileContext)
+  const onDeleteClick = () => {
+    deleteLoggedUserPost(postId);
+  };
+
   return (
     <div className="d-flex flex-column bg-white p-4 pb-2 rounded shadow my-3">
       {/* Header */}
@@ -78,9 +93,23 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
         <div className="d-flex flex-column ms-2">
           <div className="text-capitalize">{name}</div>
           <div className="text-muted" style={{ fontSize: "0.8rem" }}>
-            {moment(createdAt).format("MMMM Do YYYY, h:mm a")}
+            {moment(createdAt).format("MMM Do YYYY, h:mm a")}
           </div>
         </div>
+        {/* Drop down */}
+        {doesProfileBelongsToLoggedUser && (
+          <Dropdown className="ms-auto">
+            <Dropdown.Toggle
+              variant="light"
+              id="dropdown-basic"
+              size="sm"
+            ></Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item >Update Caption</Dropdown.Item>
+              <Dropdown.Item onClick={onDeleteClick}>Delete</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        )}
       </div>
       {/* Caption */}
       <div className="my-2">{caption}</div>
@@ -115,9 +144,9 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
           onClick={onLikeClick}
         >
           {isLiked ? (
-            <FontAwesomeIcon icon={faThumbsUp} className="text-primary me-1"/>
+            <FontAwesomeIcon icon={faThumbsUp} className="text-primary me-1" />
           ) : (
-            <FontAwesomeIcon icon={faThumbsUpRg} className="me-1"/>
+            <FontAwesomeIcon icon={faThumbsUpRg} className="me-1" />
           )}
           Like
         </button>
@@ -125,7 +154,7 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
           className="p-2 p-2 pointer w-100  my-btn-secondary text-muted"
           onClick={() => document.getElementById(postId).focus()}
         >
-          <FontAwesomeIcon icon={faComment}/> Comment
+          <FontAwesomeIcon icon={faComment} /> Comment
         </button>
       </div>
       {/* Comments */}
@@ -142,12 +171,12 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
           {viewPreviousComments ? (
             <>
               Collapse previous comments
-              <FontAwesomeIcon icon={faSquareMinus} className="ms-1"/>
+              <FontAwesomeIcon icon={faSquareMinus} className="ms-1" />
             </>
           ) : (
             <>
               View previous comments
-              <FontAwesomeIcon icon={faSquarePlus} className="ms-1"/>
+              <FontAwesomeIcon icon={faSquarePlus} className="ms-1" />
             </>
           )}
         </button>
@@ -182,7 +211,10 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
               {/* delete button */}
               {comment.user._id === loggedInUserId && (
                 <div onClick={() => onCommentRemove(comment._id)}>
-                  <FontAwesomeIcon icon={faTrashCan} className="text-danger ms-2" />
+                  <FontAwesomeIcon
+                    icon={faTrashCan}
+                    className="text-danger ms-2"
+                  />
                 </div>
               )}
             </div>
@@ -217,7 +249,10 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
             {/* delete button */}
             {lastComment.user._id === loggedInUserId && (
               <div onClick={() => onCommentRemove(lastComment._id)}>
-                <FontAwesomeIcon icon={faTrashCan} className="text-danger ms-2"/>
+                <FontAwesomeIcon
+                  icon={faTrashCan}
+                  className="text-danger ms-2"
+                />
               </div>
             )}
           </div>
