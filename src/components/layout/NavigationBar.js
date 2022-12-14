@@ -5,13 +5,20 @@ import { useContext } from "react";
 
 import AuthContext from "../../context/auth/authContext";
 import AlertContext from "../../context/alert/alertContext";
+import profileContext from "../../context/profile/profileContext";
+import postContext from "../../context/post/postContext";
 
 const NavigationBar = ({ title, logo }) => {
   const { logout, isAuthenticated, user } = useContext(AuthContext);
+  const { clearPosts } = useContext(postContext);
+  const { clearAllProfile  } = useContext(profileContext);
   const { setAlert } = useContext(AlertContext);
 
   const onLogout = () => {
     logout();
+    clearPosts();
+    clearAllProfile();
+
     setAlert("Logged Out Successfully", "warning");
   };
 
