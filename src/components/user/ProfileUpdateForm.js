@@ -6,7 +6,7 @@ import alertContext from "../../context/alert/alertContext";
 import profileContext from "../../context/profile/profileContext";
 import authContext from "../../context/auth/authContext";
 
-const ProfileUpdateForm = ({ loggedUser, show, handleClose }) => {
+const ProfileUpdateForm = ({ show, handleClose }) => {
   const { setAlert } = useContext(alertContext);
   const { loadLoggedInUser } = useContext(authContext);
   const {
@@ -17,11 +17,12 @@ const ProfileUpdateForm = ({ loggedUser, show, handleClose }) => {
     getLoggedUserPosts,
     getOtherUserFriends,
     otherUserProfile,
+    loggedUserProfile
   } = useContext(profileContext);
   let [password, setPassword] = useState("");
   let [file, setFile] = useState("");
 
-  const [userInfo, setUserInfo] = useState(loggedUser);
+  const [userInfo, setUserInfo] = useState({...loggedUserProfile});
   let { profilePicUrl, name, email, username } = userInfo;
 
   useEffect(() => {
@@ -32,11 +33,11 @@ const ProfileUpdateForm = ({ loggedUser, show, handleClose }) => {
   }, [error]);
 
   useEffect(() => {
-    if (!error && !loading) {
+    if (!error && !loading && show) {
       handleClose();
-      getLoggedUserPosts(userInfo._id);
+      setUserInfo(loggedUserProfile);
+      getLoggedUserPosts(userInfo?._id);
       //   otherUserProfile?._id && getOtherUserFriends(otherUserProfile?._id)
-      
     }
   }, [loading]);
 
