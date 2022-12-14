@@ -5,6 +5,7 @@ import {
   SET_OTHER_USER_PROFILE,
   CLEAR_OTHER_USER_PROFILE,
   SET_LOGGED_USER_POSTS,
+  DELETE_LOGGED_USER_POST,
   CLEAR_LOGGED_USER_POSTS,
   SET_OTHER_USER_POSTS,
   CLEAR_OTHER_USER_POSTS,
@@ -31,6 +32,7 @@ import {
   WITHDRAW_FRIEND_REQUEST,
   ACCEPT_FRIEND_REQUEST,
   DECLINE_FRIEND_REQUEST,
+  CLEAR_ALL_PROFILE,
 } from "../types";
 
 const profileReducer = (state, action) => {
@@ -76,6 +78,14 @@ const profileReducer = (state, action) => {
           posts: action.payload,
         },
       };
+    case DELETE_LOGGED_USER_POST:
+      return {
+        ...state,
+        loggedUser: {
+          ...state.loggedUser,
+          posts: state.loggedUser.posts.filter(post => post._id != action.payload)
+        }
+      }
     case CLEAR_LOGGED_USER_POSTS:
       return {
         ...state,
@@ -322,6 +332,10 @@ const profileReducer = (state, action) => {
           ),
         },
       };
+    case CLEAR_ALL_PROFILE:
+      return {
+        ...action.payload
+      }
     default:
       return {
         ...state,

@@ -33,6 +33,8 @@ import {
   SET_SENT_REQUESTS,
   CLEAR_SENT_REQUESTS,
   DECLINE_FRIEND_REQUEST,
+  DELETE_LOGGED_USER_POST,
+  CLEAR_ALL_PROFILE,
 } from "../types";
 import axios from "axios";
 import alertContext from "../alert/alertContext";
@@ -150,6 +152,20 @@ const ProfileState = (props) => {
       });
     }
   };
+
+  // delete post of logged user by id
+  const deleteLoggedUserPost = async(postId) =>{
+    try {
+      const res = await axios.delete(`/post/${postId}`);
+      dispatch({ type: DELETE_LOGGED_USER_POST, payload: postId });
+      setAlert(res.data.message, "success");
+    } catch (error) {
+      dispatch({
+        type: SET_PROFILE_ERROR,
+        payload: error.response.data.message,
+      });
+    }
+}
 
   // clear posts - logged user
   const clearLoggedUserPosts = () => {
@@ -432,6 +448,10 @@ const ProfileState = (props) => {
     }
   };
 
+  const clearAllProfile = () =>{
+    dispatch({type: CLEAR_ALL_PROFILE, payload: initialState })
+  }
+
   return (
     <ProfileContext.Provider
       value={{
@@ -478,6 +498,8 @@ const ProfileState = (props) => {
         setProfileLoading,
         clearProfileLoading,
         clearProfileError,
+        deleteLoggedUserPost,
+        clearAllProfile
       }}
     >
       {props.children}
