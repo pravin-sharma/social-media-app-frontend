@@ -38,6 +38,7 @@ const ProfileUpdateForm = ({ show, handleClose }) => {
       setUserInfo(loggedUserProfile);
       getLoggedUserPosts(userInfo?._id);
       //   otherUserProfile?._id && getOtherUserFriends(otherUserProfile?._id)
+      loadLoggedInUser();
     }
   }, [loading]);
 
