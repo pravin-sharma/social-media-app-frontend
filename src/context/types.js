@@ -26,6 +26,10 @@ export const POSTS_ERROR = "POSTS_ERROR"
 
 // Add Post
 export const ADD_POST = "ADD_POST";
+
+// Update Post
+export const UPDATE_POST = "UPDATE_POST";
+
 // Add Post - Error
 export const ADD_POST_ERROR = "ADD_POST_ERROR";
 export const CLEAR_ADD_POST_ERROR = "CLEAR_ADD_POST_ERROR";
@@ -100,6 +104,11 @@ export const REMOVE_FRIEND = "REMOVE_FRIEND";
 
 // Profile - clear all
 export const CLEAR_ALL_PROFILE = "CLEAR_ALL_PROFILE";
+
+
+// Search
+export const SET_SEARCH_RESULT = "SET_SEARCH_RESULT"
+export const CLEAR_SEARCH_RESULT = "CLEAR_SEARCH_RESULT"
 
 
 
