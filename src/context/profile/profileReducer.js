@@ -33,6 +33,7 @@ import {
   ACCEPT_FRIEND_REQUEST,
   DECLINE_FRIEND_REQUEST,
   CLEAR_ALL_PROFILE,
+  UPDATE_POST,
 } from "../types";
 
 const profileReducer = (state, action) => {
@@ -94,6 +95,21 @@ const profileReducer = (state, action) => {
           posts: [],
         },
       };
+
+    case UPDATE_POST:
+      return {
+        ...state,
+        loggedUser: {
+          ...state.loggedUser,
+          posts: state.loggedUser.posts.map(post => {
+            if(post._id == action.payload.postId){
+              return action.payload.post;
+            }
+            return post
+          })
+        }
+      }
+
     case SET_OTHER_USER_POSTS:
       return {
         ...state,
@@ -331,6 +347,12 @@ const profileReducer = (state, action) => {
             (friend) => friend.user._id != action.payload
           ),
         },
+        otherUser: {
+          ...state.otherUser,
+          friends: state.otherUser.friends.filter(
+            (friend) => friend.user._id != state.loggedUser.profile._id
+          ),
+        }
       };
     case CLEAR_ALL_PROFILE:
       return {

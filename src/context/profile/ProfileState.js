@@ -35,6 +35,7 @@ import {
   DECLINE_FRIEND_REQUEST,
   DELETE_LOGGED_USER_POST,
   CLEAR_ALL_PROFILE,
+  UPDATE_POST,
 } from "../types";
 import axios from "axios";
 import alertContext from "../alert/alertContext";
@@ -74,12 +75,13 @@ const ProfileState = (props) => {
   };
 
   //update logged user profile
-  const updateLoggedUserProfile = async(userInfo) =>{
+  const updateLoggedUserProfile = async (userInfo) => {
     const { file } = userInfo;
     try {
       setProfileLoading();
       if (file) {
-        const uploadUrl ="https://api.cloudinary.com/v1_1/dn6etipht/image/upload";
+        const uploadUrl =
+          "https://api.cloudinary.com/v1_1/dn6etipht/image/upload";
         const data = new FormData();
         data.append("file", file);
         data.append("upload_preset", "SocialMedia");
@@ -105,7 +107,7 @@ const ProfileState = (props) => {
       });
       clearProfileLoading();
     }
-  }
+  };
 
   // clear logged user profile
   const clearLoggedUserProfile = () => {
@@ -154,7 +156,7 @@ const ProfileState = (props) => {
   };
 
   // delete post of logged user by id
-  const deleteLoggedUserPost = async(postId) =>{
+  const deleteLoggedUserPost = async (postId) => {
     try {
       const res = await axios.delete(`/post/${postId}`);
       dispatch({ type: DELETE_LOGGED_USER_POST, payload: postId });
@@ -165,7 +167,7 @@ const ProfileState = (props) => {
         payload: error.response.data.message,
       });
     }
-}
+  };
 
   // clear posts - logged user
   const clearLoggedUserPosts = () => {
@@ -348,8 +350,6 @@ const ProfileState = (props) => {
     try {
       await axios.delete(`/friend/remove/${friendId}`);
       dispatch({ type: REMOVE_FRIEND, payload: friendId });
-      //remove user from request list
-      // add user to friends list
     } catch (error) {
       dispatch({
         type: SET_PROFILE_ERROR,
@@ -448,9 +448,29 @@ const ProfileState = (props) => {
     }
   };
 
-  const clearAllProfile = () =>{
-    dispatch({type: CLEAR_ALL_PROFILE, payload: initialState })
-  }
+  const clearAllProfile = () => {
+    dispatch({ type: CLEAR_ALL_PROFILE, payload: initialState });
+  };
+
+  //update post
+  const updatePost = async (postId, postContent) => {
+    try {
+      const res = await axios.put(`/post/${postId}`, postContent);
+      dispatch({
+        type: UPDATE_POST,
+        payload: { postId, post: res.data?.post },
+      });
+
+      setAlert(res.data.message, "success");
+      clearProfileLoading();
+    } catch (error) {
+      dispatch({
+        type: SET_PROFILE_ERROR,
+        payload: error?.response?.data?.message,
+      });
+      clearProfileLoading();
+    }
+  };
 
   return (
     <ProfileContext.Provider
@@ -476,6 +496,7 @@ const ProfileState = (props) => {
         getOtherUserProfile,
         clearOtherUserProfile,
         getLoggedUserPosts,
+        updatePost,
         clearLoggedUserPosts,
         getOtherUserPosts,
         clearOtherUserPosts,
@@ -499,7 +520,7 @@ const ProfileState = (props) => {
         clearProfileLoading,
         clearProfileError,
         deleteLoggedUserPost,
-        clearAllProfile
+        clearAllProfile,
       }}
     >
       {props.children}

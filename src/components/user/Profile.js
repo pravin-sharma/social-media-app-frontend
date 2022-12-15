@@ -330,7 +330,7 @@ const Profile = () => {
                               objectFit: "cover",
                             }}
                           />
-                          <div className="d-flex flex-column w-100 ms-3">
+                          <div className="d-flex flex-column ms-3">
                             {/* Name */}
                             <div
                               className="text-capitalize fw-semibold fs-6"
@@ -348,7 +348,7 @@ const Profile = () => {
                 {/* Friend Requests */}
 
                 {doesProfileBelongsToLoggedUser && (
-                  <Tab eventKey="friendRequests" title="Friend Requests">
+                  <Tab eventKey="friendRequests" title={`Requests (${loggedUserFriendRequests?.length})`}>
                     {/* Friend Request List */}
                     {loggedUserFriendRequests.length
                       ? loggedUserFriendRequests.map((request) => (
@@ -367,7 +367,7 @@ const Profile = () => {
                                 objectFit: "cover",
                               }}
                             />
-                            <div className="d-flex flex-column w-100 ms-3">
+                            <div className="d-flex flex-column ms-3">
                               {/* Name */}
                               <div
                                 className="text-capitalize fw-semibold fs-6"
@@ -408,7 +408,7 @@ const Profile = () => {
       </div>
     </div>
 
-    {loggedUserProfile && doesProfileBelongsToLoggedUser && <ProfileUpdateForm show={showUpdateUserModal} handleClose={handleCloseUpdateUserModal} loggedUser={loggedUserProfile}/>}
+    {loggedUserProfile && doesProfileBelongsToLoggedUser && <ProfileUpdateForm show={showUpdateUserModal} handleClose={handleCloseUpdateUserModal}/>}
     </Fragment>
   );
 };

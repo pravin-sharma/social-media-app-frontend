@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import postContext from "../../context/post/postContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComment, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+import { faComment, faEarthAmericas, faLock, faThumbsUp, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import { faSquarePlus,faSquareMinus, faThumbsUp as faThumbsUpRg, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 
 
@@ -12,7 +12,7 @@ const PostItem = ({ post }) => {
   const navigate = useNavigate();
 
   //Render Post Item
-  const { caption, mediaUrl, mediaType, comments, likes, createdAt, user } =
+  const { caption, mediaUrl, visibility, mediaType, comments, likes, createdAt, user } =
     post;
   const postId = post._id;
   // User who posted the post
@@ -83,6 +83,16 @@ const PostItem = ({ post }) => {
             {moment(createdAt).format("MMMM Do YYYY, h:mm a")}
           </div>
         </div>
+
+        <div className="d-flex align-items-center ms-auto">
+            {/* Visibility */}
+            {visibility == "public" ? (
+              <FontAwesomeIcon icon={faEarthAmericas} />
+            ) : (
+              <FontAwesomeIcon icon={faUserGroup} />
+            )}
+
+          </div>
       </div>
       {/* Caption */}
       <div className="my-2">{caption}</div>
