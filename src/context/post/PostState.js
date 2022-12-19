@@ -41,6 +41,15 @@ const PostState = (props) => {
     }
   };
 
+  const getTrendingPosts = async () => {
+    try {
+      const res = await axios.get("/post/trending");
+      dispatch({ type: SET_POSTS, payload: res.data.posts });
+    } catch (error) {
+      dispatch({ type: POSTS_ERROR, payload: error.response.data.message });
+    }
+  };
+
   const clearPosts = () =>{
     dispatch({type: CLEAR_POSTS})
   }
@@ -153,6 +162,7 @@ const PostState = (props) => {
         loading: state.loading,
         loadingAddPostForm: state.loadingAddPostForm,
         getPosts,
+        getTrendingPosts,
         clearPosts,
         clearError,
         addPost,
