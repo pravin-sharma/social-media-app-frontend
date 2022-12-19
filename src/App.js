@@ -28,6 +28,8 @@ import Home from "./components/pages/Home";
 import PrivateRoute from "./components/routing/PrivateRoute";
 import PostState from "./context/post/PostState";
 import Profile from "./components/user/Profile";
+import AdminDashboard from "./components/pages/AdminDashboard";
+import AdminState from "./context/admin/AdminState";
 
 function App() {
   axios.defaults.baseURL = "http://localhost:4000/";
@@ -38,59 +40,67 @@ function App() {
   return (
     <AlertState>
       <AuthState>
-        <PostState>
-          <SearchState>
-            <ProfileState>
-              <Router>
-                <NavigationBar />
-                <ToastContainer
-                  position="top-center"
-                  autoClose={5000}
-                  hideProgressBar={false}
-                  newestOnTop={false}
-                  closeOnClick
-                  rtl={false}
-                  pauseOnFocusLoss
-                  draggable
-                  pauseOnHover
-                  theme="light"
-                />
-                <Alerts />
-                <Routes>
-                  <Route exact path="/" element={<Navigate to="/login" />} />
-                  <Route exact path="/login" element={<Login />} />
-                  <Route exact path="/register" element={<Register />} />
-                  <Route
-                    exact
-                    path="/home"
-                    element={<PrivateRoute Component={Home} />}
+        <ProfileState>
+          <AdminState>
+            <PostState>
+              <SearchState>
+                <Router>
+                  <NavigationBar />
+                  <ToastContainer
+                    position="top-center"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light"
                   />
-                  <Route
-                    exact
-                    path="/profile/:userId"
-                    element={<PrivateRoute Component={Profile} />}
-                  />
-                  <Route
-                    exact
-                    path="/email-verification"
-                    element={<EmailVerification />}
-                  />
-                  <Route
-                    exact
-                    path="/forgot-password"
-                    element={<ForgotPassword />}
-                  />
-                  <Route
-                    exact
-                    path="/reset-password"
-                    element={<ResetPassword />}
-                  />
-                  <Route path="*" element={<PageNotFound />} />
-                </Routes>
-              </Router>
-            </ProfileState>
-          </SearchState>
-        </PostState>
+                  <Alerts />
+                  <Routes>
+                    <Route exact path="/" element={<Navigate to="/login" />} />
+                    <Route exact path="/login" element={<Login />} />
+                    <Route exact path="/register" element={<Register />} />
+                    <Route
+                      exact
+                      path="/home"
+                      element={<PrivateRoute Component={Home} />}
+                    />
+                    <Route
+                      exact
+                      path="/profile/:userId"
+                      element={<PrivateRoute Component={Profile} />}
+                    />
+                    <Route
+                      exact
+                      path="/email-verification"
+                      element={<EmailVerification />}
+                    />
+                    <Route
+                      exact
+                      path="/forgot-password"
+                      element={<ForgotPassword />}
+                    />
+                    <Route
+                      exact
+                      path="/reset-password"
+                      element={<ResetPassword />}
+                    />
+                    <Route
+                      exact
+                      path="/admin-dashboard"
+                      element={<PrivateRoute Component={AdminDashboard} />}
+                    />
+
+                    <Route path="*" element={<PageNotFound />} />
+                  </Routes>
+                </Router>
+              </SearchState>
+            </PostState>
+          </AdminState>
+        </ProfileState>
       </AuthState>
     </AlertState>
   );
