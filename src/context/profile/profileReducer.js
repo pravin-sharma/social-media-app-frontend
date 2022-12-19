@@ -34,6 +34,9 @@ import {
   DECLINE_FRIEND_REQUEST,
   CLEAR_ALL_PROFILE,
   UPDATE_POST,
+  DELETE_OTHER_USER_POST,
+  DISABLE_OTHER_USER_POST,
+  ENABLE_OTHER_USER_POST,
 } from "../types";
 
 const profileReducer = (state, action) => {
@@ -87,6 +90,41 @@ const profileReducer = (state, action) => {
           posts: state.loggedUser.posts.filter(post => post._id != action.payload)
         }
       }
+    case DELETE_OTHER_USER_POST:
+      return {
+        ...state,
+        otherUser: {
+          ...state.otherUser,
+          posts: state.otherUser.posts.filter(post => post._id != action.payload)
+        }
+      }
+    case DISABLE_OTHER_USER_POST:
+      return {
+        ...state,
+        otherUser: {
+          ...state.otherUser,
+          posts: state.otherUser.posts.map(post => {
+            if(post._id == action.payload){
+              post.isDisabled = true;
+            }
+            return post;
+          })
+        }
+      }
+    case ENABLE_OTHER_USER_POST:
+      return {
+        ...state,
+        otherUser: {
+          ...state.otherUser,
+          posts: state.otherUser.posts.map(post => {
+            if(post._id == action.payload){
+              post.isDisabled = false;
+            }
+            return post;
+          })
+        }
+      }
+
     case CLEAR_LOGGED_USER_POSTS:
       return {
         ...state,

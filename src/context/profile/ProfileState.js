@@ -36,9 +36,13 @@ import {
   DELETE_LOGGED_USER_POST,
   CLEAR_ALL_PROFILE,
   UPDATE_POST,
+  DELETE_OTHER_USER_POST,
+  DISABLE_OTHER_USER_POST,
+  ENABLE_OTHER_USER_POST,
 } from "../types";
 import axios from "axios";
 import alertContext from "../alert/alertContext";
+import authContext from "../auth/authContext";
 
 const ProfileState = (props) => {
   const initialState = {
@@ -60,6 +64,7 @@ const ProfileState = (props) => {
 
   const [state, dispatch] = useReducer(profileReducer, initialState);
   const { setAlert } = useContext(alertContext);
+  const {user} = useContext(authContext);
 
   // get logged user profile
   const getLoggedUserProfile = async (userProfileId) => {
@@ -159,7 +164,11 @@ const ProfileState = (props) => {
   const deleteLoggedUserPost = async (postId) => {
     try {
       const res = await axios.delete(`/post/${postId}`);
-      dispatch({ type: DELETE_LOGGED_USER_POST, payload: postId });
+      if(user.role === 'admin'){
+        dispatch({ type: DELETE_OTHER_USER_POST, payload: postId });
+      }else{
+        dispatch({ type: DELETE_LOGGED_USER_POST, payload: postId });
+      }
       setAlert(res.data.message, "success");
     } catch (error) {
       dispatch({
@@ -168,6 +177,34 @@ const ProfileState = (props) => {
       });
     }
   };
+
+  // disable post
+  const disablePost = async(postId) =>{
+    try {
+      const res = await axios.get(`/post/disable/${postId}`);
+        dispatch({ type: DISABLE_OTHER_USER_POST, payload: postId });
+        setAlert(res.data.message, "success");
+    } catch (error) {
+      dispatch({
+        type: SET_PROFILE_ERROR,
+        payload: error.response.data.message,
+      });
+    }
+  }
+
+  //enable post
+  const enablePost = async(postId) =>{
+    try {
+      const res = await axios.get(`/post/enable/${postId}`);
+        dispatch({ type: ENABLE_OTHER_USER_POST, payload: postId });
+        setAlert(res.data.message, "success");
+    } catch (error) {
+      dispatch({
+        type: SET_PROFILE_ERROR,
+        payload: error.response.data.message,
+      });
+    }
+  }
 
   // clear posts - logged user
   const clearLoggedUserPosts = () => {
@@ -521,6 +558,8 @@ const ProfileState = (props) => {
         clearProfileError,
         deleteLoggedUserPost,
         clearAllProfile,
+        disablePost,
+        enablePost
       }}
     >
       {props.children}
