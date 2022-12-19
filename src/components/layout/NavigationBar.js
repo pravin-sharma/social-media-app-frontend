@@ -10,6 +10,7 @@ import postContext from "../../context/post/postContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import SearchBar from "../search/SearchBar";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 const NavigationBar = ({ title, logo }) => {
   const { logout, isAuthenticated, user } = useContext(AuthContext);
@@ -27,26 +28,34 @@ const NavigationBar = ({ title, logo }) => {
 
   const AuthLink = (
     <div className="d-flex justify-content-center align-items-center">
-      {/* <div className="text-light me-4 text-capitalize">
-        Welcome, {user?.name}
-      </div> */}
-      <NavLink
+
+      {/* User profile Pic */}
+      {user?.role!=='admin' && <NavLink
         to={`/profile/${user?._id}`}
         className={({ isActive }) =>
-          isActive ? "border border-1 border-success rounded-circle me-3" : " me-3"
+          isActive
+            ? "border border-1 border-success rounded-circle me-3"
+            : " me-3"
         }
       >
-        <img
-          src={user?.profilePicUrl}
-          alt=""
-          className="rounded-circle"
-          style={{
-            width: "40px",
-            height: "40px",
-            objectFit: "cover",
-          }}
-        />
-      </NavLink>
+        <OverlayTrigger
+          placement="bottom"
+          delay={{ show: 250, hide: 400 }}
+          overlay={<Tooltip>{user?.name}</Tooltip>}
+        >
+          <img
+            src={user?.profilePicUrl}
+            alt=""
+            className="rounded-circle"
+            style={{
+              width: "40px",
+              height: "40px",
+              objectFit: "cover",
+            }}
+          />
+        </OverlayTrigger>
+      </NavLink>}
+
       <a onClick={onLogout} href="#!" className="btn btn-outline-danger">
         Logout
       </a>
@@ -75,7 +84,7 @@ const NavigationBar = ({ title, logo }) => {
   );
 
   return (
-    <nav className="navbar bg-dark">
+    <nav className="navbar navbar-dark  navbar-expand-sm bg-dark">
       <div className="container justify-content-sm-between">
         <NavLink
           className="navbar-brand text-light d-flex align-items-center justify-content-between mb-2 mb-md-0 me-5"
@@ -90,11 +99,23 @@ const NavigationBar = ({ title, logo }) => {
           />
           {title}
         </NavLink>
-
-          {isAuthenticated && <SearchBar />}
-
+        {/* <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarTogglerDemo02"
+          aria-controls="navbarTogglerDemo02"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button> */}
+        {/* <div className="collapse navbar-collapse" id="navbarTogglerDemo02"> */}
+        {isAuthenticated && user?.role!=='admin' && <SearchBar />}
+        {isAuthenticated && user?.role==='admin' && <div className="text-light fw-bold fs-4">Admin Dashboard</div>}
         {!isAuthenticated && guestLink}
         {isAuthenticated && AuthLink}
+        {/* </div> */}
       </div>
     </nav>
   );
