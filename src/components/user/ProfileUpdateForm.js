@@ -84,8 +84,10 @@ const ProfileUpdateForm = ({ show, handleClose }) => {
                 objectFit: "cover",
               }}
             />
+            {/* Profile Pic Upload */}
             <input
               type="file"
+              accept="image/*"
               className="form-control mt-3"
               placeholder="Upload New Profile Pic"
               onChange={(e) => setFile(e.target.files[0])}
