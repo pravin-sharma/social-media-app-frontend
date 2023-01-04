@@ -38,7 +38,7 @@ const AuthState = (props) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   // Load User
-  const loadUser = async () => {
+  const loadLoggedInUser = async () => {
     if (localStorage.getItem("token")) {
       setTokenInHeader(localStorage.getItem("token"));
     }
@@ -103,9 +103,10 @@ const AuthState = (props) => {
     try {
       const res = await axios.post("/login", formData, config);
       dispatch({ type: LOGIN_SUCCESS, payload: res.data.token });
-      //Setting Token in local storage here, instead of dispatch since I was unable to fetch token inside loadUser(); in time
+      //Setting Token in local storage here, instead of dispatch since I was unable to fetch token inside loadLoggedInUser(); in time
       localStorage.setItem("token", res.data?.token);
-      loadUser();
+      localStorage.setItem("loggedInUserId", res.data?.loggedInUserId);
+      loadLoggedInUser();
     } catch (error) {
       dispatch({ type: LOGIN_FAIL, payload: error.response.data.message });
     }
@@ -182,7 +183,7 @@ const AuthState = (props) => {
         registerUser,
         verifyEmail,
         clearError,
-        loadUser,
+        loadLoggedInUser,
         login,
         logout,
         setLoading,

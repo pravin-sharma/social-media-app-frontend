@@ -2,6 +2,9 @@ import React, { Fragment, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import alertContext from "../../context/alert/alertContext";
 import authContext from "../../context/auth/authContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+
 
 const EmailVerification = (props) => {
   //get email address from location prop
@@ -52,13 +55,13 @@ const EmailVerification = (props) => {
                 className="col-1 p-1 m-2 btn btn-danger"
                 onClick={onClickBackHandle}
               >
-                <i className="fa-solid fa-arrow-left" />
+                <FontAwesomeIcon icon={faArrowLeft} />
               </button>
             </div>
             <div className="row align-items-center justify-content-center">
               <form className="col-8" onSubmit={onSubmitHandle}>
                 <p className="bg-warning rounded p-1">
-                  <i className="fa-solid fa-triangle-exclamation" /> We have sent
+                <FontAwesomeIcon icon={faTriangleExclamation} /> We have sent
                   you a mail with a verification code. Please enter that code
                   below.
                 </p>

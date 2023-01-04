@@ -1,20 +1,77 @@
-import { AdvancedImage } from "@cloudinary/react";
-import { CloudinaryImage } from "@cloudinary/url-gen";
-import { fill } from "@cloudinary/url-gen/actions/resize";
 import moment from "moment/moment";
-import React from "react";
-const PostItem = ({ post }) => {
-  const { caption, mediaUrl, mediaType, comments, likes, createdAt, user } =
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import postContext from "../../context/post/postContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBan, faComment, faEarthAmericas, faLock, faThumbsUp, faUserGroup } from "@fortawesome/free-solid-svg-icons";
+import { faSquarePlus,faSquareMinus, faThumbsUp as faThumbsUpRg, faTrashCan } from "@fortawesome/free-regular-svg-icons";
+
+const PostItem = ({ post, loggedInUser }) => {
+
+  const navigate = useNavigate();  
+
+  //Render Post Item
+  const { caption, mediaUrl, visibility, isDisabled, mediaType, comments, likes, createdAt, user } =
     post;
   const postId = post._id;
-  const { name, profilePicUrl, username } = user;
-  const userId = user._id;
+  // User who posted the post
+  const { name, profilePicUrl } = user;
 
-  //show preview
-  // const myImage = new CloudinaryImage(mediaUrl).resize(fill().width(100).height(150));
+  let loggedInUserId = localStorage.getItem("loggedInUserId");
+
+  // Like feature
+  const { likePost } = useContext(postContext);
+  const [isLiked, setIsLiked] = useState(false);
+  const isPostLikedByYou = () => {
+    const isLiked = post?.likes.filter(
+      (like) => like.user?._id == loggedInUserId
+    );
+    isLiked.length > 0 ? setIsLiked(true) : setIsLiked(false);
+  };
+  useEffect(() => {
+    isPostLikedByYou();
+  }, [post]);
+
+  const onLikeClick = (event) => {
+    likePost(postId);
+    setIsLiked(!isLiked);
+  };
+
+  const onLikeHover = () =>{
+    //TODO: show people name
+    const whoLiked = likes.map(like => {
+      if(like.user){
+        return like.user.name
+      }
+    });
+    console.log(whoLiked);
+  }
+
+  //comments feature
+  const { addComment, removeComment } = useContext(postContext);
+  const [comment, setComment] = useState("");
+  const [viewPreviousComments, setViewPreviousComments] = useState(false);
+
+  const lastComment = comments[comments.length - 1];
+
+  const onCommentSubmit = (e) => {
+    if (e.key == "Enter") {
+      //add comment
+      addComment(postId, comment);
+      setComment("");
+    }
+  };
+
+  const onCommentRemove = (commentId) => {
+    removeComment(postId, commentId);
+  };
+
+  const onClickName = (userId) =>{
+    navigate(`/profile/${userId}`);
+  }
 
   return (
-    <div className="d-flex flex-column bg-white p-4 rounded shadow mt-3">
+    <div className="d-flex flex-column bg-white p-4 pb-2 rounded shadow mt-3">
       {/* Header */}
       <div className="d-flex">
         <img
@@ -24,39 +81,176 @@ const PostItem = ({ post }) => {
           style={{ width: "38px", height: "38px", objectFit: "cover" }}
         />
         <div className="d-flex flex-column ms-2">
-          <div className="text-capitalize">{name}</div>
+          <div className="text-capitalize" style={{cursor: "pointer"}} onClick={()=>onClickName(user._id)} >{name}</div>
           <div className="text-muted" style={{ fontSize: "0.8rem" }}>
             {moment(createdAt).format("MMMM Do YYYY, h:mm a")}
           </div>
         </div>
+
+        <div className="d-flex align-items-center ms-auto">
+            {/* Is Disable */}
+            {
+              loggedInUser.role==='admin'&&isDisabled&&<FontAwesomeIcon className="text-warning me-2" icon={faBan} />
+            }
+
+
+            {/* Visibility */}
+            {visibility == "public" ? (
+              <FontAwesomeIcon icon={faEarthAmericas} />
+            ) : (
+              <FontAwesomeIcon icon={faUserGroup} />
+            )}
+
+          </div>
       </div>
       {/* Caption */}
       <div className="my-2">{caption}</div>
       {/* Media View */}
       {mediaUrl && mediaType === "image" && (
-        <img alt="post"  className="img-fluid rounded mb-2" src={mediaUrl} />
+        <img alt="post" className="rounded mb-2" src={mediaUrl} />
       )}
       {mediaUrl && mediaType === "video" && (
-        <video controls width="100%">
+        <video controls width="100%" className="rounded mb-2">
           <source src={mediaUrl} type="video/mp4" />
           Sorry, your browser doesn't support embedded videos.
         </video>
       )}
       {/* Likes and Comments */}
       <div className="d-flex justify-content-between mb-2">
-        <div className="">
-          <i className="fa-solid fa-thumbs-up text-primary" /> {likes.length}
+        <div onMouseEnter={onLikeHover} className="text-primary">
+          <FontAwesomeIcon icon={faThumbsUp}/> {likes.length}
         </div>
-        <div className="">{comments.length} comments</div>
+        <div style={{cursor: "pointer"}} onClick={()=>{setViewPreviousComments(!viewPreviousComments)}}>{comments.length} comments</div>
       </div>
       {/* Action bar */}
       <div className="d-flex border-top border-bottom justify-content-around">
-        <button className="p-2 p-2 w-100 my-btn-secondary">
-          <i className="fa-solid fa-thumbs-up fa-lg text-muted" /> Like
+        <button
+          className="p-2 p-2 w-100 my-btn-secondary text-muted"
+          onClick={onLikeClick}
+        >
+          {isLiked ? (
+            <FontAwesomeIcon icon={faThumbsUp} className="text-primary me-1"/>
+          ) : (
+            <FontAwesomeIcon icon={faThumbsUpRg} className="me-1"/>
+          )}
+          Like
         </button>
-        <button className="p-2 p-2 pointer w-100  my-btn-secondary">
-          <i className="fa-solid fa-comment fa-lg text-muted" /> Comment
+        <button className="p-2 p-2 pointer w-100  my-btn-secondary text-muted"
+          onClick={()=>document.getElementById(postId).focus()}
+        >
+          <FontAwesomeIcon icon={faComment} /> Comment
         </button>
+      </div>
+      {/* Comments */}
+      {/* view previous comments button */}
+      {comments.length > 1 && (
+        <button
+          className={
+            viewPreviousComments
+              ? "btn btn-secondary btn-sm mt-2"
+              : "btn btn-primary btn-sm mt-2"
+          }
+          onClick={() => setViewPreviousComments(!viewPreviousComments)}
+        >
+          {viewPreviousComments ? (
+            <>
+              Collapse previous comments
+              <FontAwesomeIcon icon={faSquareMinus} className="ms-1"/>
+            </>
+          ) : (
+            <>
+              View previous comments
+              <FontAwesomeIcon icon={faSquarePlus} className="ms-1"/>
+
+            </>
+          )}
+        </button>
+      )}
+      {/* previous comments */}
+      {viewPreviousComments &&
+        comments.length > 0 &&
+        comments.map((comment) => (
+          <div className="d-flex mt-3" key={comment._id}>
+            <img
+              src={comment.user?.profilePicUrl}
+              alt="avatar"
+              className="rounded-circle me-2"
+              style={{ width: "38px", height: "38px", objectFit: "cover" }}
+            />
+            <div className="d-flex align-items-center ms-2">
+              <div className="d-flex flex-column comment-input-bg rounded">
+                <div style={{cursor: "pointer"}} className="mx-2 mt-1 text-capitalize" onClick={()=>onClickName(comment.user?._id)}>
+                  {comment.user?.name}
+                </div>
+                <div
+                  className="mx-2 mb-1 text-muted text-break"
+                  style={{ fontSize: "0.8rem" }}
+                >
+                  {comment.text}
+                </div>
+              </div>
+              {/* delete button */}
+              {comment.user?._id === loggedInUserId && (
+                <div onClick={() => onCommentRemove(comment._id)}>
+                  <FontAwesomeIcon icon={faTrashCan} className="text-danger ms-2"/>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+
+      {/* last comment */}
+      {lastComment && !viewPreviousComments && (
+        <div className="d-flex mt-3">
+          <img
+            src={lastComment?.user?.profilePicUrl}
+            alt="avatar"
+            className="rounded-circle me-2"
+            style={{ width: "38px", height: "38px", objectFit: "cover" }}
+          />
+          <div className="d-flex align-items-center ms-2">
+            <div className="d-flex flex-column comment-input-bg rounded">
+              <div style={{cursor: "pointer"}} className="mx-2 mt-1 text-capitalize" onClick={()=>onClickName(lastComment.user._id)}>
+                {lastComment?.user?.name}
+              </div>
+              <div
+                className="mx-2 mb-1 text-muted text-break"
+                style={{ fontSize: "0.8rem" }}
+              >
+                {lastComment?.text}
+              </div>
+            </div>
+            {/* delete button */}
+            {lastComment?.user?._id === loggedInUserId && (
+              <div onClick={() => onCommentRemove(lastComment?._id)}>
+                <FontAwesomeIcon icon={faTrashCan} className="text-danger ms-2"/>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+      {/* Comment Input */}
+      <div className="d-flex mt-2">
+        <div className="p-1">
+          <img
+            src={loggedInUser?.profilePicUrl}
+            alt="avatar"
+            className="rounded-circle me-2"
+            style={{ width: "38px", height: "38px", objectFit: "cover" }}
+          />
+        </div>
+        <input
+          type="text"
+          className="form-control rounded-pill border-0 pointer comment-input-bg"
+          name="comment"
+          id={postId}
+          value={comment}
+          onChange={(e) => {
+            setComment(e.target.value);
+          }}
+          placeholder={`Write a comment...`}
+          onKeyDown={onCommentSubmit}
+        />
       </div>
     </div>
   );

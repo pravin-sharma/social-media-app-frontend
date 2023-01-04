@@ -2,11 +2,17 @@ import React, { Fragment, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import alertContext from "../../context/alert/alertContext";
 import authContext from "../../context/auth/authContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowLeft,
+  faTriangleExclamation,
+} from "@fortawesome/free-solid-svg-icons";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
 
-  const { error, clearError, forgotPassword, trigger, clearTrigger } = useContext(authContext);
+  const { error, clearError, forgotPassword, trigger, clearTrigger } =
+    useContext(authContext);
   const { setAlert } = useContext(alertContext);
 
   useEffect(() => {
@@ -16,12 +22,12 @@ const ForgotPassword = () => {
     }
   }, [error]);
 
-  useEffect(()=>{
-    if(trigger){
-      setAlert(`Email Sent to ${email}`, 'success')
+  useEffect(() => {
+    if (trigger) {
+      setAlert(`Email Sent to ${email}`, "success");
       clearTrigger();
     }
-  },[trigger])
+  }, [trigger]);
 
   const [email, setEmail] = useState("");
 
@@ -31,7 +37,7 @@ const ForgotPassword = () => {
 
   const onSubmitHandle = (event) => {
     event.preventDefault();
-    forgotPassword(email)
+    forgotPassword(email);
   };
 
   const onClickBackHandle = () => {
@@ -48,15 +54,16 @@ const ForgotPassword = () => {
                 className="col-1 p-1 m-2 btn btn-danger"
                 onClick={onClickBackHandle}
               >
-                <i className="fa-solid fa-arrow-left" />
+                <FontAwesomeIcon icon={faArrowLeft} />
               </button>
             </div>
             <div className="row align-items-center justify-content-center">
               <form className="col-8" onSubmit={onSubmitHandle}>
                 <p className="bg-warning rounded p-1">
-                  <i className="fa-solid fa-triangle-exclamation" /> We will
-                  send you password reset url and secret token at your registered email
-                  address. Kindly enter your registered email address.
+                <FontAwesomeIcon icon={faTriangleExclamation} /> We will
+                  send you password reset url and secret token at your
+                  registered email address. Kindly enter your registered email
+                  address.
                 </p>
                 <div className="input-group">
                   <input
