@@ -5,6 +5,7 @@ import {
   faTrashCan,
 } from "@fortawesome/free-regular-svg-icons";
 import {
+  faBan,
   faComment,
   faEarthAmericas,
   faLock,
@@ -18,8 +19,13 @@ import { Dropdown } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import profileContext from "../../context/profile/profileContext";
 import PostUpdateForm from "./PostUpdateForm";
+import adminContext from '../../context/admin/adminContext'
 
-const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
+const ProfilePostItem = ({
+  post,
+  loggedInUser,
+  doesProfileBelongsToLoggedUser,
+}) => {
   const navigate = useNavigate();
 
   //Render Post Item
@@ -27,6 +33,7 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
     caption,
     mediaUrl,
     visibility,
+    isDisabled,
     mediaType,
     comments,
     likes,
@@ -44,7 +51,7 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
   const [isLiked, setIsLiked] = useState(false);
   const isPostLikedByYou = () => {
     const isLiked = post?.likes.filter(
-      (like) => like.user._id == loggedInUserId
+      (like) => like.user?._id == loggedInUserId
     );
     isLiked.length > 0 ? setIsLiked(true) : setIsLiked(false);
   };
@@ -59,7 +66,7 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
 
   const onLikeHover = () => {
     //TODO: show people name
-    const whoLiked = likes.map((like) => like.user.name);
+    const whoLiked = likes.map((like) => like.user?.name);
     console.log(whoLiked);
   };
 
@@ -86,7 +93,7 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
     navigate(`/profile/${userId}`);
   };
 
-  //Delete post feature
+  //Delete post feature - logged user
   const { deleteLoggedUserPost } = useContext(profileContext);
   const onDeleteClick = () => {
     deleteLoggedUserPost(postId);
@@ -97,6 +104,16 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
   const [showUpdatePostModal, setShowUpdatePostModal] = useState(false);
   const handleShowUpdatePostModal = () => setShowUpdatePostModal(true);
   const handleCloseUpdatePostModal = () => setShowUpdatePostModal(false);
+
+  //Disable post feature - admin
+  const {disablePost, enablePost} = useContext(profileContext);
+  const onDisableClick = () => {
+    disablePost(postId);
+  };
+  //Enable post feature - admin
+  const onEnableClick = () => {
+    enablePost(postId);
+  };
 
   return (
     <Fragment>
@@ -117,6 +134,10 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
             </div>
           </div>
           <div className="d-flex align-items-center ms-auto">
+            {/* Is Disable */}
+            {loggedInUser.role === "admin" && isDisabled && (
+              <FontAwesomeIcon className="text-warning me-2" icon={faBan} />
+            )}
 
             {/* Visibility */}
             {visibility == "public" ? (
@@ -126,6 +147,7 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
             )}
 
             {/* Drop down */}
+            {/* Logged User */}
             {doesProfileBelongsToLoggedUser && (
               <Dropdown className="ms-2">
                 <Dropdown.Toggle
@@ -137,6 +159,28 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
                   <Dropdown.Item onClick={handleShowUpdatePostModal}>
                     Update
                   </Dropdown.Item>
+                  <Dropdown.Item onClick={onDeleteClick}>Delete</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            )}
+            {/* Admin */}
+            {loggedInUser.role === "admin" && (
+              <Dropdown className="ms-2">
+                <Dropdown.Toggle
+                  variant="light"
+                  id="dropdown-basic"
+                  size="sm"
+                ></Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {!isDisabled ? (
+                    <Dropdown.Item onClick={onDisableClick}>
+                      Disable post
+                    </Dropdown.Item>
+                  ) : (
+                    <Dropdown.Item onClick={onEnableClick}>
+                      Enable post
+                    </Dropdown.Item>
+                  )}
                   <Dropdown.Item onClick={onDeleteClick}>Delete</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
@@ -297,7 +341,7 @@ const ProfilePostItem = ({ post, doesProfileBelongsToLoggedUser }) => {
         <div className="d-flex mt-2">
           <div className="p-1">
             <img
-              src={user?.profilePicUrl}
+              src={loggedInUser?.profilePicUrl}
               alt="avatar"
               className="rounded-circle me-2"
               style={{ width: "38px", height: "38px", objectFit: "cover" }}

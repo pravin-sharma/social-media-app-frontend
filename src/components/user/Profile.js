@@ -253,6 +253,7 @@ const Profile = () => {
                           <ProfilePostItem
                             post={post}
                             key={post._id}
+                            loggedInUser={user}
                             doesProfileBelongsToLoggedUser={
                               doesProfileBelongsToLoggedUser
                             }
@@ -264,6 +265,7 @@ const Profile = () => {
                         <ProfilePostItem
                           post={post}
                           key={post._id}
+                          loggedInUser={user}
                           doesProfileBelongsToLoggedUser={
                             doesProfileBelongsToLoggedUser
                           }
@@ -279,11 +281,11 @@ const Profile = () => {
                       ? loggedUserFriends.map((friend) => (
                           <div
                             className="d-flex align-items-center mt-3 pb-2 border-bottom"
-                            key={friend.user._id}
+                            key={friend.user?._id}
                           >
                             {/* Profile Pic */}
                             <img
-                              src={friend.user.profilePicUrl}
+                              src={friend.user?.profilePicUrl}
                               className="rounded-circle"
                               alt=""
                               style={{
@@ -297,14 +299,14 @@ const Profile = () => {
                               <div
                                 className="text-capitalize fw-semibold fs-6"
                                 style={{ cursor: "pointer" }}
-                                onClick={() => onClickName(friend.user._id)}
+                                onClick={() => onClickName(friend.user?._id)}
                               >
-                                {friend.user.name}
+                                {friend.user?.name}
                               </div>
                               <button
                                 className="btn btn-primary w-50 btn-sm mt-1"
                                 onClick={() =>
-                                  OnClickRemoveFriend(friend.user._id)
+                                  OnClickRemoveFriend(friend.user?._id)
                                 }
                               >
                                 Remove Friend
@@ -317,11 +319,11 @@ const Profile = () => {
                     ? otherUserFriends.map((friend) => (
                         <div
                           className="d-flex align-items-center mt-3 pb-2 border-bottom"
-                          key={friend.user._id}
+                          key={friend.user?._id}
                         >
                           {/* Profile Pic */}
                           <img
-                            src={friend.user.profilePicUrl}
+                            src={friend.user?.profilePicUrl}
                             className="rounded-circle"
                             alt=""
                             style={{
@@ -335,9 +337,9 @@ const Profile = () => {
                             <div
                               className="text-capitalize fw-semibold fs-6"
                               style={{ cursor: "pointer" }}
-                              onClick={() => onClickName(friend.user._id)}
+                              onClick={() => onClickName(friend.user?._id)}
                             >
-                              {friend.user.name}
+                              {friend.user?.name}
                             </div>
                           </div>
                         </div>
@@ -358,7 +360,7 @@ const Profile = () => {
                           >
                             {/* Profile Pic */}
                             <img
-                              src={request.user.profilePicUrl}
+                              src={request.user?.profilePicUrl}
                               className="rounded-circle"
                               alt=""
                               style={{
@@ -372,16 +374,16 @@ const Profile = () => {
                               <div
                                 className="text-capitalize fw-semibold fs-6"
                                 style={{ cursor: "pointer" }}
-                                onClick={() => onClickName(request.user._id)}
+                                onClick={() => onClickName(request.user?._id)}
                               >
-                                {request.user.name}
+                                {request.user?.name}
                               </div>
                               {/* Accept/Decline button */}
                               <div className="d-flex justify-content-start">
                                 <div
                                   className="btn btn-primary btn-sm"
                                   onClick={() =>
-                                    acceptFriendRequest(request.user._id)
+                                    acceptFriendRequest(request.user?._id)
                                   }
                                 >
                                   Accept
@@ -389,7 +391,7 @@ const Profile = () => {
                                 <div
                                   className="btn btn-danger btn-sm ms-2"
                                   onClick={() =>
-                                    declineFriendRequest(request.user._id)
+                                    declineFriendRequest(request.user?._id)
                                   }
                                 >
                                   Decline

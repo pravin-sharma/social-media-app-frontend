@@ -3,16 +3,15 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import postContext from "../../context/post/postContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComment, faEarthAmericas, faLock, faThumbsUp, faUserGroup } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faComment, faEarthAmericas, faLock, faThumbsUp, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import { faSquarePlus,faSquareMinus, faThumbsUp as faThumbsUpRg, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 
+const PostItem = ({ post, loggedInUser }) => {
 
-const PostItem = ({ post }) => {
-
-  const navigate = useNavigate();
+  const navigate = useNavigate();  
 
   //Render Post Item
-  const { caption, mediaUrl, visibility, mediaType, comments, likes, createdAt, user } =
+  const { caption, mediaUrl, visibility, isDisabled, mediaType, comments, likes, createdAt, user } =
     post;
   const postId = post._id;
   // User who posted the post
@@ -25,7 +24,7 @@ const PostItem = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);
   const isPostLikedByYou = () => {
     const isLiked = post?.likes.filter(
-      (like) => like.user._id == loggedInUserId
+      (like) => like.user?._id == loggedInUserId
     );
     isLiked.length > 0 ? setIsLiked(true) : setIsLiked(false);
   };
@@ -40,7 +39,11 @@ const PostItem = ({ post }) => {
 
   const onLikeHover = () =>{
     //TODO: show people name
-    const whoLiked = likes.map(like => like.user.name);
+    const whoLiked = likes.map(like => {
+      if(like.user){
+        return like.user.name
+      }
+    });
     console.log(whoLiked);
   }
 
@@ -85,6 +88,12 @@ const PostItem = ({ post }) => {
         </div>
 
         <div className="d-flex align-items-center ms-auto">
+            {/* Is Disable */}
+            {
+              loggedInUser.role==='admin'&&isDisabled&&<FontAwesomeIcon className="text-warning me-2" icon={faBan} />
+            }
+
+
             {/* Visibility */}
             {visibility == "public" ? (
               <FontAwesomeIcon icon={faEarthAmericas} />
@@ -163,15 +172,15 @@ const PostItem = ({ post }) => {
         comments.map((comment) => (
           <div className="d-flex mt-3" key={comment._id}>
             <img
-              src={comment.user.profilePicUrl}
+              src={comment.user?.profilePicUrl}
               alt="avatar"
               className="rounded-circle me-2"
               style={{ width: "38px", height: "38px", objectFit: "cover" }}
             />
             <div className="d-flex align-items-center ms-2">
               <div className="d-flex flex-column comment-input-bg rounded">
-                <div style={{cursor: "pointer"}} className="mx-2 mt-1 text-capitalize" onClick={()=>onClickName(comment.user._id)}>
-                  {comment.user.name}
+                <div style={{cursor: "pointer"}} className="mx-2 mt-1 text-capitalize" onClick={()=>onClickName(comment.user?._id)}>
+                  {comment.user?.name}
                 </div>
                 <div
                   className="mx-2 mb-1 text-muted text-break"
@@ -181,7 +190,7 @@ const PostItem = ({ post }) => {
                 </div>
               </div>
               {/* delete button */}
-              {comment.user._id === loggedInUserId && (
+              {comment.user?._id === loggedInUserId && (
                 <div onClick={() => onCommentRemove(comment._id)}>
                   <FontAwesomeIcon icon={faTrashCan} className="text-danger ms-2"/>
                 </div>
@@ -194,7 +203,7 @@ const PostItem = ({ post }) => {
       {lastComment && !viewPreviousComments && (
         <div className="d-flex mt-3">
           <img
-            src={lastComment.user.profilePicUrl}
+            src={lastComment?.user?.profilePicUrl}
             alt="avatar"
             className="rounded-circle me-2"
             style={{ width: "38px", height: "38px", objectFit: "cover" }}
@@ -202,18 +211,18 @@ const PostItem = ({ post }) => {
           <div className="d-flex align-items-center ms-2">
             <div className="d-flex flex-column comment-input-bg rounded">
               <div style={{cursor: "pointer"}} className="mx-2 mt-1 text-capitalize" onClick={()=>onClickName(lastComment.user._id)}>
-                {lastComment.user.name}
+                {lastComment?.user?.name}
               </div>
               <div
                 className="mx-2 mb-1 text-muted text-break"
                 style={{ fontSize: "0.8rem" }}
               >
-                {lastComment.text}
+                {lastComment?.text}
               </div>
             </div>
             {/* delete button */}
-            {lastComment.user._id === loggedInUserId && (
-              <div onClick={() => onCommentRemove(lastComment._id)}>
+            {lastComment?.user?._id === loggedInUserId && (
+              <div onClick={() => onCommentRemove(lastComment?._id)}>
                 <FontAwesomeIcon icon={faTrashCan} className="text-danger ms-2"/>
               </div>
             )}
@@ -224,7 +233,7 @@ const PostItem = ({ post }) => {
       <div className="d-flex mt-2">
         <div className="p-1">
           <img
-            src={user?.profilePicUrl}
+            src={loggedInUser?.profilePicUrl}
             alt="avatar"
             className="rounded-circle me-2"
             style={{ width: "38px", height: "38px", objectFit: "cover" }}

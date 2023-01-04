@@ -1,13 +1,13 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import alertContext from "../../context/alert/alertContext";
+import authContext from "../../context/auth/authContext";
 import postContext from "../../context/post/postContext";
 import PostItem from "./PostItem";
 
-import PostForm from "./PostForm";
-
-const Posts = () => {
-  const { posts, getPosts, error, clearError } = useContext(postContext);
+const Posts = ({postsType}) => {
+  const { posts, getPosts,getTrendingPosts, error, clearError } = useContext(postContext);
   const { setAlert } = useContext(alertContext);
+  const {user} = useContext(authContext);
 
   useEffect(() => {
     if (error) {
@@ -18,8 +18,12 @@ const Posts = () => {
   }, [error]);
 
   useEffect(() => {
-    getPosts();
-  }, []);
+    if(postsType=='myFeeds'){
+      getPosts();
+    }else{
+      getTrendingPosts();
+    }
+  }, [postsType]);
 
   //get all posts
 
@@ -27,7 +31,7 @@ const Posts = () => {
     <div className="d-flex flex-column align-items-center">
       <div className="col-12 col-xl-10">
         {posts.length
-          ? posts.map((post) => <PostItem post={post} key={post._id} />)
+          ? posts.map((post) => <PostItem post={post} loggedInUser={user} key={post._id} />)
           : "No Posts Found"}
       </div>
     </div>
